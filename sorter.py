@@ -29,30 +29,32 @@ class sorter:
         self.text=""
         self.categories_json_path = "data.json"
 
-    def extract_text_from_json(self,json_data):
+    def extract_text_from_json(self, json_data):
         text = ""
-        text += json_data.get('branch', '') + " "
-        text += json_data.get('resumeName', '') + " "
-        text += " ".join(json_data.get('areasOfInterest', [])) + " "
-        text += " ".join(json_data.get('achievements', [])) + " "
-        text += " ".join(json_data.get('skills', [])) + " "
 
-        for internship in json_data.get('internships', []):
+        # Extracting data from the appliedBy section
+        applied_by = json_data.get('appliedBy', {})
+        
+        text += applied_by.get('firstName', '') + " "
+        text += applied_by.get('lastName', '') + " "
+        text += applied_by.get('institute', '') + " "
+        text += applied_by.get('program', '') + " "
+        text += applied_by.get('year', '') + " "
+        
+        # Extracting internship details
+        for internship in applied_by.get('resumeInterships', []):
             text += internship.get('title', '') + " "
             text += internship.get('company', '') + " "
             text += internship.get('description', '') + " "
-
-        for academic in json_data.get('academics', []):
-            text += academic.get('institute', '') + " "
-            text += academic.get('degree', '') + " "
-            text += academic.get('major', '') + " "
-
-        for project in json_data.get('projects', []):
+        
+        # Extracting project details
+        for project in applied_by.get('resumeProjects', []):
             text += project.get('title', '') + " "
             text += project.get('company', '') + " "
             text += project.get('description', '') + " "
-        self.text=text
-        return text
+
+        self.text = text.strip()
+        return self.text
 
     # Function to calculate word frequency using TensorFlow TextVectorization
     def calculate_word_frequency(self,texts):

@@ -6,11 +6,11 @@ import json
 import tensorflow as tf
 import re
 import math
+from sample_resumes import input_data
 
 
 word_count = {}
 shortlist={}
-final_shortlist={}
 
 
 
@@ -83,34 +83,38 @@ def cosine_similarity(dict1, dict2):
         return dot_product / (magnitude1 * magnitude2)
 
 
-def process_json_files2(folder_path):
-    # Check if the provided path is a directory
-    if not os.path.isdir(folder_path):
-        print(f"Error: {folder_path} is not a valid directory.")
-        return
+def calculate_score(data):
+    try:
+        sort1 = sorter(data)
+        # Extract text from JSON data using the Sorter object
+        text = sort1.extract_text_from_json(data)
+        # Split the text into words
+        text = split_text(text)
+        # Calculate word frequency
+        word_frequency = sort1.calculate_word_frequency(text)
+        # Calculate cosine similarity with a predefined word count
+        score = cosine_similarity(word_frequency, word_count)
+        return score
+    except Exception as e:
+        print(f"Error calculating score: {e}")
+        return 0
+    
 
-    # Iterate through all files in the directory
-    for filename in os.listdir(folder_path):
-        file_path = os.path.join(folder_path, filename)
-        # Check if the file is a JSON file
-        if filename.endswith('.json'):
-            with open(file_path, 'r') as json_file:
-                data = json.load(json_file)
-                sort1 = sorter(data)
-                text = sort1.extract_text_from_json(data)
-                text = split_text(text)
-                word_frequency = sort1.calculate_word_frequency(text)
-                final_shortlist[filename]= cosine_similarity(word_frequency,word_count)
+def sort_json_by_score(json_list):
+    # Calculate scores for each JSON object
+    scores = [(json_obj, calculate_score(json_obj)) for json_obj in json_list]
+    
+    # Sort the JSON objects based on the scores
+    sorted_json = sorted(scores, key=lambda x: x[1], reverse=True)
+    
+    return [json_obj for json_obj, _ in sorted_json]
+
+filter_common_words('posting.txt')
 try:
-    if sys.argv[1].lower()=="filter":
-        filter_common_words(sys.argv[2])
-        process_json_files2(sys.argv[3])
-        final_shortlist = dict(sorted(final_shortlist.items(), key=lambda item: item[1], reverse=True))
-        print(final_shortlist)
-    elif sys.argv[1].lower()=="categorize":
-        process_json_files(sys.argv[3],sys.argv[2].upper())
-        shortlist=dict(sorted(shortlist.items(), key=lambda item: item[1], reverse=True))
-        print(shortlist)
+    
+    filter_common_words(sys.argv[1])
+    print(sort_json_by_score(sys.argv[2]))
 except IndexError:
-    print("IndexError : Arguements missing- collective_sorter.py <Operation_to_Perform(filter/categorize)> <category(categorize)//Job_posting.txt(filter)> <folder_path with all resumes>")
+    print("IndexError : Arguements missing- collective_sorter.py <Job_posting.txt(filter)> <input>")
 
+    
