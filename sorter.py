@@ -1,7 +1,7 @@
 import json
-import tensorflow as tf
 from collections import Counter
 import sys
+import re
 
 # List of common English words
 common_words = [
@@ -28,6 +28,7 @@ class sorter:
         self.user_json= dictn
         self.text=""
         self.categories_json_path = "data.json"
+        self.common_words=common_words
 
     def extract_text_from_json(self, json_data):
         text = ""
@@ -57,21 +58,24 @@ class sorter:
         return self.text
 
     # Function to calculate word frequency using TensorFlow TextVectorization
-    def calculate_word_frequency(self,texts):
+    def preprocess_text(self, text):
+        # Convert to lowercase
+        text = text.lower()
+        # Remove punctuation and special characters
+        text = re.sub(r'[^\w\s]', '', text)
+        return text
+    
+    def calculate_word_frequency(self, texts):
         if not texts:
             raise ValueError("No valid text found in the input.")
-            
-        vectorizer = tf.keras.layers.TextVectorization(output_mode='int')
-        vectorizer.adapt(tf.data.Dataset.from_tensor_slices(texts).batch(1))
         
-        vocabulary = vectorizer.get_vocabulary()
         word_counts = Counter()
         
         for text in texts:
-            vectorized_text = vectorizer(tf.constant([text]))
-            for word_index in vectorized_text[0].numpy():
-                word = vocabulary[word_index]
-                if word not in common_words:
+            preprocessed_text = self.preprocess_text(text)
+            words = preprocessed_text.split()
+            for word in words:
+                if word not in self.common_words:
                     word_counts[word] += 1
         
         return word_counts

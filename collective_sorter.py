@@ -3,7 +3,6 @@ from sorter import common_words
 import os
 import sys
 import json
-import tensorflow as tf
 import re
 import math
 

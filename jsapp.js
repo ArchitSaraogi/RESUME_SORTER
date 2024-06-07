@@ -1,4 +1,3 @@
-const spawn = require('child_process').spawn;
 
 //const childpython = spawn('python',['--version']);
 
@@ -246,6 +245,7 @@ const input_data = [
 		"__v": 0
         }
 ]
+const spawn = require('child_process').spawn;
 
 const childpython = spawn('python',['collective_sorter.py','posting.txt',input_data]);
 
