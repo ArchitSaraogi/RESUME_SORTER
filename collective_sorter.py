@@ -36,16 +36,16 @@ def super_sort(resume_json_array,job_posting_location):
 
 
     def filter_common_words(file, common_words=common_words):
-        with open(file, 'r') as f:
-            for line in f:
-                words = line.split()
-                for word in words:
-                    word = word.lower()
-                    if word not in common_words:
-                        if word in word_count:
-                            word_count[word] += 1
-                        else:
-                            word_count[word] = 1
+        
+        for line in file:
+            words = line.split()
+            for word in words:
+                word = word.lower()
+                if word not in common_words:
+                     if word in word_count:
+                        word_count[word] += 1
+                    else:
+                        word_count[word] = 1
     def filter(text):
         word_count={}
         for line in text:
