@@ -106,7 +106,7 @@ def super_sort(resume_json_array,job_posting_location):
         # Sort the JSON objects based on the scores
         sorted_json = sorted(scores, key=lambda x: x[1], reverse=True)
         
-        return [json_obj for json_obj, _ in sorted_json]
+        return [json_obj['_id'] for json_obj, _ in sorted_json]
 
     filter_common_words(job_posting_location)
     return sort_json_by_score(resume_json_array)
