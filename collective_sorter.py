@@ -35,26 +35,16 @@ def super_sort(resume_json_array,job_posting_location):
                             shortlist[filename]=i[1]
 
 
-    def filter_common_words(file, common_words=common_words):
-        
-        for line in file:
-            words = line.split()
-            for word in words:
-                word = word.lower()
-                if word not in common_words:
-                     if word in word_count:
-                        word_count[word] += 1
-                    else:
-                        word_count[word] = 1
+
+
     def filter(text):
-        word_count={}
-        for line in text:
+        for line in text.split():
             if line not in common_words:
                 if line in word_count:
                     word_count[line] += 1
                 else:
                     word_count[line] = 1
-        return word_count
+    
 
     def split_text(text):
         # Use regular expression to split by spaces and commas
@@ -102,13 +92,13 @@ def super_sort(resume_json_array,job_posting_location):
     def sort_json_by_score(json_list):
         # Calculate scores for each JSON object
         scores = [(json_obj, calculate_score(json_obj)) for json_obj in json_list]
-        
+        scores_= [calculate_score(json_obj) for json_obj in json_list]
         # Sort the JSON objects based on the scores
         sorted_json = sorted(scores, key=lambda x: x[1], reverse=True)
         
         return [json_obj['_id'] for json_obj, _ in sorted_json]
 
-    filter_common_words(job_posting_location)
+    filter(job_posting_location)
     return sort_json_by_score(resume_json_array)
 
     
