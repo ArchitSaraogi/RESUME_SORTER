@@ -76,10 +76,11 @@ def super_sort(resume_json_array,job_posting_location):
         try:
             sort1 = sorter(data)
             # Extract text from JSON data using the Sorter object
-            text = sort1.extract_text_from_json(data)
+            text = sort1.extract_text_from_json()
             # Split the text into words
             text = split_text(text)
             # Calculate word frequency
+            
             word_frequency = sort1.calculate_word_frequency(text)
             # Calculate cosine similarity with a predefined word count
             score = cosine_similarity(word_frequency, word_count)
@@ -96,7 +97,7 @@ def super_sort(resume_json_array,job_posting_location):
         # Sort the JSON objects based on the scores
         sorted_json = sorted(scores, key=lambda x: x[1], reverse=True)
         
-        return [json_obj['_id'] for json_obj, _ in sorted_json]
+        return [json_obj['_id']['$oid'] for json_obj, _ in sorted_json]
 
     filter(job_posting_location)
     return sort_json_by_score(resume_json_array)

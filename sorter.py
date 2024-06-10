@@ -30,30 +30,25 @@ class sorter:
         self.categories_json_path = "data.json"
         self.common_words=common_words
 
-    def extract_text_from_json(self, json_data):
+    def extract_text_from_json(self):
         text = ""
 
-        # Extracting data from the appliedBy section
-        applied_by = json_data.get('appliedBy', {})
-        
-        text += applied_by.get('firstName', '') + " "
-        text += applied_by.get('lastName', '') + " "
-        text += applied_by.get('institute', '') + " "
-        text += applied_by.get('program', '') + " "
-        text += applied_by.get('year', '') + " "
-        
-        # Extracting internship details
-        for internship in applied_by.get('resumeInterships', []):
-            text += internship.get('title', '') + " "
-            text += internship.get('company', '') + " "
-            text += internship.get('description', '') + " "
-        
-        # Extracting project details
-        for project in applied_by.get('resumeProjects', []):
-            text += project.get('title', '') + " "
-            text += project.get('company', '') + " "
-            text += project.get('description', '') + " "
+        # Function to recursively extract text from JSON
+        def extract_text_recursive(data):
+            nonlocal text
+            if isinstance(data, dict):
+                for value in data.values():
+                    extract_text_recursive(value)
+            elif isinstance(data, list):
+                for item in data:
+                    extract_text_recursive(item)
+            elif isinstance(data, str):
+                text += data + " "
 
+        # Start extracting text recursively
+        extract_text_recursive(self.user_json)
+        
+        # Remove trailing whitespace
         self.text = text.strip()
         return self.text
 
