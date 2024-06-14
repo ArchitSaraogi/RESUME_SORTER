@@ -1,4 +1,4 @@
-This is a manual to integrate the python project into your website
+##This is a manual to integrate the python project into your website
 
 1> How a user must operate it:
 	a>The program has two operational modes 'filter' and 'categorize'
