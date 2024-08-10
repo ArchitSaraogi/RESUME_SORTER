@@ -54,8 +54,9 @@ NOTE** : All locations system variables 2,4 should be complete locations and not
  TROUBLESHOOTING:
 
 
- Error Arguement Missing: Arguements- collective_sorter.py <Operation_to_Perform(filter/categorize)> <category(categorize)//Job_posting.txt(filter)> <folder_path with all resumes> 
+ Error Arguement Missing: Arguements- collective_sorter.py <Operation_to_Perform(filter/categorize)> <category(categorize)//Job_posting.txt(filter)> <folder_path with all resumes>
 
+ Note: Contents modified this Readme is no longer valid
  
 
  you perhaps forgot to entry all 4 of the required system arguements as the program demanded
