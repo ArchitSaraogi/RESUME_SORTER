@@ -85,15 +85,14 @@ def super_sort(resume_json_array, job_posting_location):
             weighted_score = score + internship_weight + project_weight + organization_weight
 
             return weighted_score
-        
-
     def sort_json_by_score(json_list):
-        scores = [(json_obj, calculate_score(json_obj)) for json_obj in json_list]
-        scores_= [calculate_score(json_obj) for json_obj in json_list]
-        sorted_json = sorted(scores, key=lambda x: x[1], reverse=True)
-        
-        return [json_obj['_id']for json_obj, _ in sorted_json]
 
+         scores = [(json_obj, calculate_score(json_obj)) for json_obj in json_list]
+         sorted_json = sorted(scores, key=lambda x: (x[1] is None, x[1]), reverse=True)
+         return [json_obj['_id'] for json_obj, _ in sorted_json]
+
+
+    
     filter(job_posting_location)
     return sort_json_by_score(resume_json_array)
 
